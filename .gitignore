@@ -1,0 +1,7 @@
+report
+selenic_data
+target
+*.env
+*.porperties
+localhost-*.json
+.tools

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Parasoft Demo App Suite" verbose="1">
+    <test name="Purchase Order Tests">
+        <classes>
+            <class name="com.parasoft.demo.tests.PurchaseOrderTest"/>
+        </classes>
+    </test>
+</suite>
