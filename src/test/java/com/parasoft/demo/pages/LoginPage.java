@@ -25,4 +25,11 @@ public class LoginPage extends BasePage {
         click(signInButton);
         return new HomePage(driver);
     }
+
+    public ApprovalsPage loginToApprovals(String username, String password) {
+        type(usernameField, username);
+        type(passwordField, password);
+        click(signInButton);
+        return new ApprovalsPage(driver);
+    }
 }

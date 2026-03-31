@@ -5,11 +5,11 @@ import com.parasoft.demo.pages.HomePage;
 import com.parasoft.demo.pages.LoginPage;
 import com.parasoft.demo.pages.OrderWizardPage;
 import com.parasoft.demo.pages.OrdersPage;
+import com.parasoft.demo.pages.ApprovalsPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-
 import java.util.Map;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
@@ -52,7 +52,7 @@ public class PurchaseOrderTest {
         driver.manage().window().maximize();
     }
 
-    @Test(description = "PGT-13: Purchaser adds a backpack to cart and submits order for approval")
+    @Test(priority = 1, description = "PGT-13: Purchaser adds a backpack to cart and submits order for approval")
     public void testPurchaserSubmitsBackpackOrder() {
         // Step 1: Log in
         driver.get(BASE_URL + "/loginPage");
@@ -89,6 +89,20 @@ public class PurchaseOrderTest {
         // Step 8: Verify order status
         String orderStatus = ordersPage.getSecondOrderStatus();
         Assert.assertEquals(orderStatus, "Processed", "Order status should be 'Processed'");
+    }
+
+    @Test(priority = 2, dependsOnMethods = "testPurchaserSubmitsBackpackOrder",
+            description = "PGT-APPROVER: Approver approves first open order (JSON-based flow)")
+    public void testApproverApprovesOpenOrderFromJsonFlow() {
+        // Steps from localhost-2026-03-31-12-43-42-approver.json
+        driver.get(BASE_URL + "/loginPage");
+        ApprovalsPage approvalsPage = new LoginPage(driver).loginToApprovals("approver", "password");
+        String orderNumber = approvalsPage.openFirstOpenOrderOrFirstListed();
+        approvalsPage.approveCurrentOrder("Approved via Selenium MCP approver JSON flow.");
+
+        // Verify the same order is now Approved.
+        String status = approvalsPage.getStatusForOrder(orderNumber);
+        Assert.assertEquals(status, "Approved", "Order " + orderNumber + " should be Approved");
     }
 
     @AfterMethod
